@@ -106,7 +106,7 @@ We can connect BlueTooth to serial converter module directly to boards based on 
   c) pin 17 and 18 of AUX4 connector, then set BLUETOOTH_SERIAL to 2 (RX from BT to AUX4 p18, TX from BT to AUX4 p17)
   Comment out or set the BLUETOOTH_SERIAL to 0 or -1 to disable this feature.
 */
-#define BLUETOOTH_SERIAL   1                      // Port number (1..3) - For RUMBA use 3
+#define BLUETOOTH_SERIAL   0                      // Port number (1..3) - For RUMBA use 3
 #define BLUETOOTH_BAUD     115200                 // communication speed
 
 // Uncomment the following line if you are using Arduino compatible firmware made for Arduino version earlier then 1.0
@@ -126,8 +126,15 @@ is a full cartesian system where x, y and z moves are handled by separate motors
 9 = y axis + xz H-gantry (x_motor = x+z, z_motor = z-x)
 Cases 1, 2, 8 and 9 cover all needed xy and xz H gantry systems. If you get results mirrored etc. you can swap motor connections for x and y.
 If a motor turns in the wrong direction change INVERT_X_DIR or INVERT_Y_DIR.
+
+90 Gear Scara                         XY == 2D_Scara, Z == Linear
+91 Scott-Washer                       XZ == 2D_Scott, Y == Linear
+92 Scott-Pillor Spin                  ZX == 3D_Scott, Y is round (Center is at inside)
+93 Scott-Table Spin Scott             ZX == 3D_Scott, Y is round (Center is at outside)
+94 Scott-Linear Pillor or Table       ZX == 2D_Scott, Y == Linear
 */
-#define DRIVE_SYSTEM 0
+
+#define DRIVE_SYSTEM 90
 
 /* You can write some GCODE to be executed on startup. Use this e.g. to set some 
 pins. Separate multiple GCODEs with \n
@@ -171,7 +178,43 @@ pins. Separate multiple GCODEs with \n
 #define XAXIS_STEPS_PER_MM AXIS_STEPS_PER_MM
 #define YAXIS_STEPS_PER_MM AXIS_STEPS_PER_MM
 #define ZAXIS_STEPS_PER_MM AXIS_STEPS_PER_MM
-#else
+#endif
+#if DRIVE_SYSTEM == 90
+// Set the values true where you have a hardware endstop. The Pin number is taken from pins.h.
+#define MIN_HARDWARE_ENDSTOP_X false
+#define MIN_HARDWARE_ENDSTOP_Y false
+#define MIN_HARDWARE_ENDSTOP_Z true
+#define MAX_HARDWARE_ENDSTOP_X true
+#define MAX_HARDWARE_ENDSTOP_Y true
+#define MAX_HARDWARE_ENDSTOP_Z false
+
+//set to true to invert the logic of the endstops
+#define ENDSTOP_X_MIN_INVERTING true
+#define ENDSTOP_Y_MIN_INVERTING true
+#define ENDSTOP_Z_MIN_INVERTING true
+#define ENDSTOP_X_MAX_INVERTING true
+#define ENDSTOP_Y_MAX_INVERTING true
+#define ENDSTOP_Z_MAX_INVERTING true
+
+/** Maximum feedrate, the system allows. Higher feedrates are reduced to these values.
+The axis order in all axis related arrays is X, Y, Z
+Overridden if EEPROM activated.
+*/
+#define MAX_FEEDRATE_X 200
+#define MAX_FEEDRATE_Y 200
+#define MAX_FEEDRATE_Z 5
+
+/** Home position speed in mm/s. Overridden if EEPROM activated. */
+#define HOMING_FEEDRATE_X 80
+#define HOMING_FEEDRATE_Y 80
+#define HOMING_FEEDRATE_Z 1
+
+//// ENDSTOP SETTINGS:
+// Sets direction of endstops when homing; 1=MAX, -1=MIN
+#define X_HOME_DIR 1
+#define Y_HOME_DIR 1
+#define Z_HOME_DIR -1
+
 // *******************************************************
 // *** These parameter are for all other printer types ***
 // *******************************************************
@@ -186,7 +229,7 @@ For xy gantry use 2*belt moved!
 Overridden if EEPROM activated.*/
 #define YAXIS_STEPS_PER_MM 98.425196
 /** \brief Number of steps for a 1mm move in z direction  Overridden if EEPROM activated.*/
-#define ZAXIS_STEPS_PER_MM 2560
+#define ZAXIS_STEPS_PER_MM 1600
 #endif
 
 // ##########################################################################################
@@ -229,7 +272,8 @@ controlled by settings in extruder 0 definition. */
 /* Speed in mm/s for extruder moves fom internal commands, e.g. switching extruder. */
 #define EXTRUDER_SWITCH_XY_SPEED 100
 
-// Extruder offsets in steps not mm!
+#pragma region extruder
+				// Extruder offsets in steps not mm!
 #define EXT0_X_OFFSET 0
 #define EXT0_Y_OFFSET 0
 #define EXT0_Z_OFFSET 0
@@ -296,7 +340,9 @@ controlled by settings in extruder 0 definition. */
 */
 #define EXT0_HEAT_MANAGER 1
 /** Wait x seconds, after reaching target temperature. Only used for M109.  Overridden if EEPROM activated. */
-#define EXT0_WATCHPERIOD 1
+#define EXT0_WATCHPERIOD 1  
+
+
 
 /** \brief The maximum value, I-gain can contribute to the output.
 
@@ -545,6 +591,9 @@ Determine what should be done if a jam is detected
 */
 #define JAM_ACTION 1
 
+#pragma endregion
+#pragma region temperature
+
 /** PID control only works target temperature +/- PID_CONTROL_RANGE.
 If you get much overshoot at the first temperature set, because the heater is going full power too long, you
 need to increase this value. For one 6.8 Ohm heater 10 is ok. With two 6.8 Ohm heater use 15.
@@ -614,12 +663,12 @@ R0/T0, which is near your operating temperature. This will reduce precision for 
 which are not really important. The resistors must fit the following schematic:
 @code
 VREF ---- R2 ---+--- Termistor ---+-- GND
-                |                 |
-                +------ R1 -------+
-                |                 |
-                +---- Capacitor --+
-                |
-                V measured
+				|                 |
+				+------ R1 -------+
+				|                 |
+				+---- Capacitor --+
+				|
+				V measured
 @endcode
 
 If you don't have R1, set it to 0.
@@ -689,7 +738,7 @@ Value is used for all generic tables created. */
 // ############# Heated bed configuration ########################
 
 /** \brief Set true if you have a heated bed connected to your board, false if not */
-#define HAVE_HEATED_BED 1
+#define HAVE_HEATED_BED 0
 
 #define HEATED_BED_MAX_TEMP 115
 /** Skip M190 wait, if heated bed is already within x degrees. Fixed numbers only, 0 = off. */
@@ -746,7 +795,10 @@ A good start is 30 lower then the optimal value. You need to leave room for cool
 #define MIN_DEFECT_TEMPERATURE -10
 #define MAX_DEFECT_TEMPERATURE 300
 
-// ##########################################################################################
+#pragma endregion
+
+#pragma region Laser cutter  and  CNC
+				// ##########################################################################################
 // ##                             Laser configuration                                      ##
 // ##########################################################################################
 
@@ -760,7 +812,7 @@ your feedrate. For exchangeable diode lasers this is normally enough. If you nee
 you can set the intensity in a range 0-255 with a custom extension to the driver. See driver.h
 and comments on how to extend the functions non invasive with our event system.
 
-If you have a laser - powder system you will like your E override. If moves contain a 
+If you have a laser - powder system you will like your E override. If moves contain a
 increasing extruder position it will laser that move. With this trick you can
 use existing FDM slicers to laser the output. Laser width is extrusion width.
 
@@ -768,7 +820,7 @@ Other tools may use M3 and M5 to enable/disable laser. Here G1/G2/G3 moves have 
 and G0 moves have it disables.
 
 In any case, laser only enables while moving. At the end of a move it gets
-automatically disabled. 
+automatically disabled.
 */
 
 #define SUPPORT_LASER 0 // set 1 to enable laser support
@@ -780,7 +832,7 @@ automatically disabled.
 // ##########################################################################################
 
 /*
-If the firmware is in CNC mode, it can control a mill with M3/M4/M5. It works 
+If the firmware is in CNC mode, it can control a mill with M3/M4/M5. It works
 similar to laser mode, but mill keeps enabled during G0 moves and it allows
 setting rpm (only with event extension that supports this) and milling direction.
 It also can add a delay to wait for spindle to run on full speed.
@@ -793,6 +845,8 @@ It also can add a delay to wait for spindle to run on full speed.
 #define CNC_ENABLE_WITH 1 // Set 0 if low enables spindle
 #define CNC_DIRECTION_PIN -1 // Set to pin if direction control is possible
 #define CNC_DIRECTION_CW 1 // Set signal required for clockwise rotation
+
+#pragma endregion
 
 
 /* Select the default mode when the printer gets enables. Possible values are
@@ -810,29 +864,16 @@ PRINTER_MODE_CNC 2
 use a mechanical endstop connected with GND. Set value to false for no pull-up
 on this endstop.
 */
-#define ENDSTOP_PULLUP_X_MIN false
-#define ENDSTOP_PULLUP_Y_MIN false
-#define ENDSTOP_PULLUP_Z_MIN false
+#define ENDSTOP_PULLUP_X_MIN true
+#define ENDSTOP_PULLUP_Y_MIN true
+#define ENDSTOP_PULLUP_Z_MIN true
 #define ENDSTOP_PULLUP_X_MAX true
 #define ENDSTOP_PULLUP_Y_MAX true
-#define ENDSTOP_PULLUP_Z_MAX false
+#define ENDSTOP_PULLUP_Z_MAX true
 
-//set to true to invert the logic of the endstops
-#define ENDSTOP_X_MIN_INVERTING true
-#define ENDSTOP_Y_MIN_INVERTING true
-#define ENDSTOP_Z_MIN_INVERTING true
-#define ENDSTOP_X_MAX_INVERTING false
-#define ENDSTOP_Y_MAX_INVERTING false
-#define ENDSTOP_Z_MAX_INVERTING true
 
-// Set the values true where you have a hardware endstop. The Pin number is taken from pins.h.
 
-#define MIN_HARDWARE_ENDSTOP_X true
-#define MIN_HARDWARE_ENDSTOP_Y true
-#define MIN_HARDWARE_ENDSTOP_Z false
-#define MAX_HARDWARE_ENDSTOP_X false
-#define MAX_HARDWARE_ENDSTOP_Y false
-#define MAX_HARDWARE_ENDSTOP_Z true
+
 
 //If your axes are only moving in one direction, make sure the endstops are connected properly.
 //If your axes move in one direction ONLY when the endstops are triggered, set ENDSTOPS_INVERTING to true here
@@ -847,10 +888,11 @@ on this endstop.
 #define Z_ENABLE_ON 0
 
 // Disables axis when it's not being used.
-#define DISABLE_X false
-#define DISABLE_Y false
-#define DISABLE_Z false
-#define DISABLE_E false
+#define DISABLE_X true
+#define DISABLE_Y true
+#define DISABLE_Z true
+#define DISABLE_E true
+  
 /* If you want to keep z motor running on stepper timeout, remove comments below.
   This may be useful if your z bed moves when motors are disabled. Will still
   turn z off when heaters get also disabled. 
@@ -863,11 +905,7 @@ on this endstop.
 #define INVERT_Y_DIR true
 #define INVERT_Z_DIR true
 
-//// ENDSTOP SETTINGS:
-// Sets direction of endstops when homing; 1=MAX, -1=MIN
-#define X_HOME_DIR -1
-#define Y_HOME_DIR -1
-#define Z_HOME_DIR 1
+
 
 // Delta robot radius endstop
 #define max_software_endstop_r true
@@ -878,8 +916,8 @@ on this endstop.
 #define min_software_endstop_z false
 
 //If true, axis won't move to coordinates greater than the defined lengths below.
-#define max_software_endstop_x true
-#define max_software_endstop_y true
+#define max_software_endstop_x false
+#define max_software_endstop_y false
 #define max_software_endstop_z false
 
 // If during homing the endstop is reached, ho many mm should the printer move back for the second try
@@ -908,9 +946,9 @@ on this endstop.
 // For delta robot Z_MAX_LENGTH is the maximum travel of the towers and should be set to the distance between the hotend
 // and the platform when the printer is at its home position.
 // If EEPROM is enabled these values will be overridden with the values in the EEPROM
-#define X_MAX_LENGTH 165
-#define Y_MAX_LENGTH 175
-#define Z_MAX_LENGTH 116.820
+#define X_MAX_LENGTH 300
+#define Y_MAX_LENGTH 300
+#define Z_MAX_LENGTH 300
 // Coordinates for the minimum axis. Can also be negative if you want to have the bed start at 0 and the printer can go to the left side
 // of the bed. Maximum coordinate is given by adding the above X_MAX_LENGTH values.
 #define X_MIN_POS 0
@@ -1053,18 +1091,7 @@ Mega. Used only for nonlinear systems like delta or tuga. */
     Overridden if EEPROM activated.
 */
 #define MAX_INACTIVE_TIME 0L
-/** Maximum feedrate, the system allows. Higher feedrates are reduced to these values.
-    The axis order in all axis related arrays is X, Y, Z
-     Overridden if EEPROM activated.
-    */
-#define MAX_FEEDRATE_X 200
-#define MAX_FEEDRATE_Y 200
-#define MAX_FEEDRATE_Z 5
 
-/** Home position speed in mm/s. Overridden if EEPROM activated. */
-#define HOMING_FEEDRATE_X 80
-#define HOMING_FEEDRATE_Y 80
-#define HOMING_FEEDRATE_Z 3
 
 /** Set order of axis homing. Use HOME_ORDER_XYZ and replace XYZ with your order. 
  * If you measure Z with your extruder tip you need a hot extruder to get right measurement. In this
@@ -1072,7 +1099,7 @@ Mega. Used only for nonlinear systems like delta or tuga. */
  * first a z home to get some reference, then raise to ZHOME_HEAT_HEIGHT do xy homing and then after
  * heating to minimum ZHOME_MIN_TEMPERATURE will z home again for correct height.   
  * */
-#define HOMING_ORDER HOME_ORDER_ZXY
+#define HOMING_ORDER HOME_ORDER_XYZ
 // Used for homing order HOME_ORDER_ZXYTZ
 #define ZHOME_MIN_TEMPERATURE 0
 // needs to heat all extruders (1) or only current extruder (0)
@@ -1386,7 +1413,7 @@ to recalibrate z.
 */
 #define Z_PROBE_Z_OFFSET_MODE 0
 
-#define FEATURE_Z_PROBE 1
+#define FEATURE_Z_PROBE 0
 #define Z_PROBE_PIN 63
 #define Z_PROBE_PULLUP 1
 #define Z_PROBE_ON_HIGH 1
@@ -1484,7 +1511,7 @@ motorized bed leveling */
  * DISTORTION_CORRECTION_R is the distance of last row or column from center
  */
 
-#define DISTORTION_CORRECTION         1
+#define DISTORTION_CORRECTION         0
 #define DISTORTION_CORRECTION_POINTS  5
 /* For delta printers you simply define the measured radius around origin */
 #define DISTORTION_CORRECTION_R       80
