@@ -96,25 +96,50 @@ void PrintLine::moveRelativeDistanceInSteps(int32_t x, int32_t y, int32_t z, int
     if(Printer::debugDryrun() || (MIN_EXTRUDER_TEMP > 30 && Extruder::current->tempControl.currentTemperatureC < MIN_EXTRUDER_TEMP && !Printer::isColdExtrusionAllowed()))
         e = 0; // should not be allowed for current temperature
 #endif
-    float savedFeedrate = Printer::feedrate;
+	Com::printFLN(PSTR("PrintLine::moveRelativeDistanceInSteo(),   Current,offset  "));
+	Com::printNumber(Printer::currentPositionSteps[X_AXIS]);
+	Com::printF(PSTR(","));
+	Com::printNumber(x);
+	Com::printFLN(PSTR(" "));
+
+	
+	Com::printNumber(Printer::currentPositionSteps[Y_AXIS]);
+	Com::printF(PSTR(","));
+	Com::printNumber(y);
+	Com::printFLN(PSTR(" "));
+
+	Com::printNumber(Printer::currentPositionSteps[Z_AXIS]);
+	Com::printF(PSTR(","));
+	Com::printNumber(z);
+	Com::printFLN(PSTR(" "));
+
+	Com::printNumber(Printer::currentPositionSteps[Z_AXIS]);
+	Com::printF(PSTR(","));
+	Com::printNumber(e);
+	Com::printFLN(PSTR(" "));
+
+	float savedFeedrate = Printer::feedrate;
     Printer::destinationSteps[X_AXIS] = Printer::currentPositionSteps[X_AXIS] + x;
     Printer::destinationSteps[Y_AXIS] = Printer::currentPositionSteps[Y_AXIS] + y;
     Printer::destinationSteps[Z_AXIS] = Printer::currentPositionSteps[Z_AXIS] + z;
     Printer::destinationSteps[E_AXIS] = Printer::currentPositionSteps[E_AXIS] + e;
     Printer::feedrate = feedrate;
+	//Com::printFLN(PSTR("PrintLine::moveRelativeDistanceInSteps  hhhh"));
 #if NONLINEAR_SYSTEM
     if (!queueNonlinearMove(checkEndstop, pathOptimize, false))
     {
-        Com::printWarningFLN(PSTR("moveRelativeDistanceInSteps / queueDeltaMove returns error"));
+        Com::printWarningFLN(PSTR("PrintLinemoveRelativeDistanceInSteps / queueDeltaMove returns error"));
     }
 #else
     queueCartesianMove(checkEndstop, pathOptimize);
 #endif
-    Printer::feedrate = savedFeedrate;
+	//Com::printFLN(PSTR("PrintLine::moveRelativeDistanceInSteps  jjjj"));
+	Printer::feedrate = savedFeedrate;
     Printer::updateCurrentPosition(false);
     if(waitEnd)
         Commands::waitUntilEndOfAllMoves();
-    previousMillisCmd = HAL::timeInMilliseconds();
+	//Com::printFLN(PSTR("PrintLine::moveRelativeDistanceInSteps  kkkk"));
+	previousMillisCmd = HAL::timeInMilliseconds();
 }
 
 void PrintLine::moveRelativeDistanceInStepsReal(int32_t x, int32_t y, int32_t z, int32_t e, float feedrate, bool waitEnd,bool pathOptimize)
@@ -1518,7 +1543,7 @@ Inverse Kinematic:
 uint8_t transformCartesianStepsToDeltaSteps(int32_t cartesianPosSteps[], int32_t scaraPosSteps[])
 {
 	//This is a virtual method for essential abstract class Printer.
-	Com::printFLN("Not implicated in transformCartesianStepsToDeltaSteps() ,0604-1805");
+	//Com::printFLN("Not implicated in transformCartesianStepsToDeltaSteps() ,0604-1805");
 	for (fast8_t i = 0; i < E_AXIS; i++)
 	{
 		scaraPosSteps[i] = cartesianPosSteps[i];

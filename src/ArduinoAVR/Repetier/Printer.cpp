@@ -1480,9 +1480,12 @@ void Printer::homeXAxis()
 #endif // NUM_EXTRUDER > 1
         steps = (Printer::xMaxSteps - Printer::xMinSteps) * X_HOME_DIR;
         currentPositionSteps[X_AXIS] = -steps;
+		Com::printFLN(PSTR("Before transforming....."));
 #if NONLINEAR_SYSTEM		
 		transformCartesianStepsToDeltaSteps(currentPositionSteps, currentNonlinearPositionSteps);
-#endif			
+#endif	
+		Com::printFLN(PSTR("After transforming....."));
+
         PrintLine::moveRelativeDistanceInSteps(2 * steps, 0, 0, 0, homingFeedrate[X_AXIS], true, true);
         currentPositionSteps[X_AXIS] = (X_HOME_DIR == -1) ? xMinSteps - offX : xMaxSteps + offX;
 #if NONLINEAR_SYSTEM
@@ -1508,6 +1511,7 @@ void Printer::homeXAxis()
 #endif
     }
 #endif	
+	Com::printFLN(PSTR("Home X is finished."));
 }
 
 void Printer::homeYAxis()
@@ -1515,6 +1519,7 @@ void Printer::homeYAxis()
     long steps;
     if ((MIN_HARDWARE_ENDSTOP_Y && Y_MIN_PIN > -1 && Y_HOME_DIR == -1) || (MAX_HARDWARE_ENDSTOP_Y && Y_MAX_PIN > -1 && Y_HOME_DIR == 1))
     {
+		Com::printFLN(PSTR("Y axis is going to max position"));
 		coordinateOffset[Y_AXIS] = 0;
         long offY = 0;
 #if NUM_EXTRUDER > 1
@@ -1529,12 +1534,19 @@ void Printer::homeYAxis()
         UI_STATUS_UPD_F(Com::translatedF(UI_TEXT_HOME_Y_ID));
         steps = (yMaxSteps-Printer::yMinSteps) * Y_HOME_DIR;
         currentPositionSteps[Y_AXIS] = -steps;
+		Com::printFLN(PSTR("Y axis setHoming  aaa"));
+
         setHoming(true);
+		Com::printFLN(PSTR("Y axis setHoming  bbb"));
+
 #if NONLINEAR_SYSTEM
 		transformCartesianStepsToDeltaSteps(currentPositionSteps, currentNonlinearPositionSteps);
 #endif
-        PrintLine::moveRelativeDistanceInSteps(0,2 * steps,0,0,homingFeedrate[Y_AXIS],true,true);
-        currentPositionSteps[Y_AXIS] = (Y_HOME_DIR == -1) ? yMinSteps-offY : yMaxSteps+offY;
+		Com::printFLN(PSTR("Y axis setHoming  ccc"));
+		PrintLine::moveRelativeDistanceInSteps(0,2 * steps,0,0,homingFeedrate[Y_AXIS],true,true);
+		Com::printFLN(PSTR("Y axis setHoming  fff"));
+		currentPositionSteps[Y_AXIS] = (Y_HOME_DIR == -1) ? yMinSteps-offY : yMaxSteps+offY;
+		Com::printFLN(PSTR("First home"));
 #if NONLINEAR_SYSTEM
 		transformCartesianStepsToDeltaSteps(currentPositionSteps, currentNonlinearPositionSteps);
 #endif
@@ -1546,6 +1558,7 @@ void Printer::homeYAxis()
             PrintLine::moveRelativeDistanceInSteps(0,axisStepsPerMM[Y_AXIS] * -ENDSTOP_Y_BACK_ON_HOME * Y_HOME_DIR,0,0,homingFeedrate[Y_AXIS],true,false);
 #endif
         currentPositionSteps[Y_AXIS] = (Y_HOME_DIR == -1) ? yMinSteps - offY : yMaxSteps + offY;
+		Com::printFLN(PSTR("Second home"));
 #if NONLINEAR_SYSTEM
 		transformCartesianStepsToDeltaSteps(currentPositionSteps, currentNonlinearPositionSteps);
 #endif
@@ -1570,11 +1583,13 @@ void Printer::homeZAxis() // Cartesian homing
         steps = (zMaxSteps - zMinSteps) * Z_HOME_DIR;
         currentPositionSteps[Z_AXIS] = -steps;
         setHoming(true);
+		Com::printFLN(PSTR("Before transforming  a01"));
 #if NONLINEAR_SYSTEM
 		transformCartesianStepsToDeltaSteps(currentPositionSteps, currentNonlinearPositionSteps);
 #endif
         PrintLine::moveRelativeDistanceInSteps(0,0,2 * steps,0,homingFeedrate[Z_AXIS],true,true);
         currentPositionSteps[Z_AXIS] = (Z_HOME_DIR == -1) ? zMinSteps : zMaxSteps;
+		Com::printFLN(PSTR("Before transforming a02"));
 #if NONLINEAR_SYSTEM
 		transformCartesianStepsToDeltaSteps(currentPositionSteps, currentNonlinearPositionSteps);
 #endif
@@ -1620,9 +1635,13 @@ void Printer::homeAxis(bool xaxis,bool yaxis,bool zaxis) // home non-delta print
 #define HOMING_ORDER HOME_ORDER_XYZ
 #endif
 #if HOMING_ORDER == HOME_ORDER_XYZ
+	Com::printFLN(PSTR("Start homing X"));
     if(xaxis) homeXAxis();
-    if(yaxis) homeYAxis();
-    if(zaxis) homeZAxis();
+	Com::printFLN(PSTR("Start homing Y"));
+	if(yaxis) homeYAxis();
+	Com::printFLN(PSTR("Start homing Z"));
+	if(zaxis) homeZAxis();
+	Com::printFLN("End Homing");
 #elif HOMING_ORDER == HOME_ORDER_XZY
     if(xaxis) homeXAxis();
     if(zaxis) homeZAxis();
