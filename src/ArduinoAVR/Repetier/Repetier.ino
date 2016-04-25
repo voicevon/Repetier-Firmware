@@ -168,6 +168,91 @@ void loop()
 
 
 
+//
+//#pragma region Xuming Studying
+//
+//void Xuming_How_G1_Moves()
+//{
+//
+//	//1000 Repetier:
+//	Printer::setup();
+//	Commands::commandLoop();
+//
+//	//1001 	Commands::commandLoops()
+//	GCode::readFromSerial();
+//	GCode* code = GCode::peekCurrentCommand();     //New command line is created.
+//	Commands::executeGCode(code);
+//
+//	//1002. GCode::executeGCode(GCode* com)
+//	Commands::processGCode(code);
+//
+//
+//	//1003. GCode::processGCode(GCode* com)
+//	Printer::setDestinationStepsFromGCode(code);
+//
+//	//Below is for non-linear system only.
+//	PrintLine::queueNonlinearMove(0, 0, 0);   //One line becomes numbers of segments.
+//
+//}
+//
+//void Xuming_HowOneLine_becomes_ManySegments()
+//{
+//	//Location:      PrintLine::queueNonlinearMove()
+//
+//	//Get axisDistanceMM of each axis in movement gCode line.
+//	//Calculate  cartesianDistance, and for each axis.
+//	//Calculate segmentCount
+//	int16_t segmentCount = 10;
+//	int numLines = (segmentCount + DELTASEGMENTS_PER_PRINTLINE - 1) / DELTASEGMENTS_PER_PRINTLINE;
+//	for (int lineNumber = 1; lineNumber <= numLines; lineNumber++)
+//	{
+//		PrintLine *p = PrintLine::getNextWriteLine();  //One Segment is created.
+//		//set properties of *p, Only belows are important:
+//		p->numNonlinearSegments = segmentsPerLine;
+//		p->calculateNonlinearSubSegments();
+//	}
+//}
+//
+//void Xuming_Learn_calculateNonlinearSubSegments()
+//{
+//	//A: Calculate all Towers in the certain Segment?
+//	//or B: Calculate all segments in a certain line?
+//
+//	for each segment d in segments[]
+//	{
+//		for {i = 0; i < TOWER_COUNT; i++)
+//		{
+//			destinationSteps[i] = static_cast<int32_t>(floor(0.5 + dx[i] * segment)) + Printer::currentPositionSteps[i];
+//			destinationDeltaSteps[i] = transformCartesianStepsToDeltaSteps(destinationSteps[i]);   //Actrully, is call one time for all towers.
+//			d->deltaStep[i] = destinationDeltaSteps[i];
+//			Printer::currentNonlinearPositionSteps[i] = destinationDeltaSteps[i];
+//		}
+//}
+//
+//void Xuming_WhereModify_StepperBuffer()
+//{
+//	PrintLine::calculateNonlinearSubSegments();
+//	transformCartesianStepsToDeltaSteps();
+//	{
+//		//What is inside transform is as below
+//		deltaPosSteps[A_TOWER] = SQRT(opt - temp) + zSteps;
+//
+//	}
+//}
+//
+//void Xuming_AllInvokeTo_transformCartesianStepsToDeltaSteps()
+//{
+//	PrintLine::calculateNonlinearSubSegments();
+//	Printer::homeZAxis();
+//
+//	//Delta Only
+//	Printer::deltaMoveToTopEndstops();
+//	//During Setup()
+//	Printer::setup();
+//	Printer::updateDerivedParameter();
+//}
+//
+//				#pragma endregion
 
 
 

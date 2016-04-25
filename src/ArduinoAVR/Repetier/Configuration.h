@@ -140,7 +140,7 @@ pins. Separate multiple GCODEs with \n
 
 /** Drive settings for the Delta printers
 */
-#if DRIVE_SYSTEM == DELTA
+#if DRIVE_SYSTEM == 0
     // ***************************************************
     // *** These parameter are only for Delta printers ***
     // ***************************************************
