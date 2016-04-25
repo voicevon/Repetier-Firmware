@@ -390,7 +390,7 @@ STEPPER_CURRENT_CONTROL
 #define ORIG_Z_STEP_PIN         46
 #define ORIG_Z_DIR_PIN          48
 #define ORIG_Z_ENABLE_PIN       62
-#define ORIG_Z_MIN_PIN          18
+#define ORIG_Z_MIN_PIN          18    //pin46  PD3   TXD1 ,interfere with bluetooth!
 #define ORIG_Z_MAX_PIN          19
 
 #define ORIG_E0_STEP_PIN         26

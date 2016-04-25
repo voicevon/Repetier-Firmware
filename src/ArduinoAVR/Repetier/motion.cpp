@@ -1183,6 +1183,34 @@ uint8_t transformCartesianStepsToDeltaSteps(int32_t cartesianPosSteps[], int32_t
 #endif
 
 #if DRIVE_SYSTEM == DELTA
+/*
+Delta
+|      ||                |
+|      ||                |
+o      ||                |
+|\     ||                |
+| \    ||                |
+|  \   |o                o
+|   \  ||\              /|
+|    \ || \            / |
+|     \   |           /  |
+|      \   \         /   |
+|       \   \       /    |
+|        \  |      /     |
+|      || \  \    /      |
+|      ||  \  \  /       |
+|      ||   \ | /        |
+|      ||    \|/         |
+|      ||     o          |
+|      ||                |
+|    __/\____            |
+|  _/        \_____      |
+| /                \____ |
+|/______________________\|
+
+*/
+
+*/
 // pick one for verbose the other silent
 #define RETURN_0(s) { Com::printErrorFLN(PSTR(s)); return 0; }
 /*#define RETURN_0(s) { Com::print(s " "); SHOWS(temp); SHOWS(opt);\
@@ -1464,6 +1492,41 @@ uint8_t transformCartesianStepsToDeltaSteps(int32_t cartesianPosSteps[], int32_t
     }
     return 1;
 }
+#endif
+
+#if DRIVE_SYSTEM==90
+/*
+Scara_XY
+
+
+Shoulder Arm
+O-------------------O
+Fixed                  \
+Point			        \  Elbow Arm
+\
+\
+\
+End Effector
+
+Forward Kinematic:
+http://www.ormec.com/LinkClick.aspx?fileticket=1xw3v6XpQ4E%3D&tabid=145&mid=621
+
+Inverse Kinematic:
+
+
+*/
+uint8_t transformCartesianStepsToDeltaSteps(int32_t cartesianPosSteps[], int32_t scaraPosSteps[])
+{
+	//This is a virtual method for essential abstract class Printer.
+	Com::printFLN("Not implicated in transformCartesianStepsToDeltaSteps() ,0604-1805");
+	for (fast8_t i = 0; i < E_AXIS; i++)
+	{
+		scaraPosSteps[i] = cartesianPosSteps[i];
+	}
+	return 1;
+}
+
+
 #endif
 
 

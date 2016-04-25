@@ -200,10 +200,14 @@ void Endstops::update() {
         if(READ(Y_MAX_PIN) != ENDSTOP_Y_MAX_INVERTING)
             newRead |= ENDSTOP_Y_MAX_ID;
 #endif
+		//Com::printFLN(PSTR("Before----"));
+		//Com::printNumber(newRead);
 #if (Z_MIN_PIN > -1) && MIN_HARDWARE_ENDSTOP_Z
         if(READ(Z_MIN_PIN) != ENDSTOP_Z_MIN_INVERTING)
             newRead |= ENDSTOP_Z_MIN_ID;
-#endif
+#endif 
+		//Com::printFLN(PSTR("After----"));
+		//Com::printNumber(newRead);
 #if (Z_MAX_PIN > -1) && MAX_HARDWARE_ENDSTOP_Z
         if(READ(Z_MAX_PIN) != ENDSTOP_Z_MAX_INVERTING)
             newRead |= ENDSTOP_Z_MAX_ID;

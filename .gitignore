@@ -30,3 +30,8 @@ activate*.bat
 src/Repetier-Atmel7/*
 src/ArduinoDUE/Repetier.zip
 src/ArduinoAVR/Repetier.zip
+*.xml
+*.vcxproj
+src/ArduinoAVR/Repetier/Repetier.vcxproj.filters
+*.elf
+src/ArduinoAVR/Repetier/.vs/Repetier/v14/.suo

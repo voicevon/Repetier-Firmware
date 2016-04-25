@@ -1823,7 +1823,7 @@ void Commands::processMCode(GCode *com) {
             break;
         case 119: // M119
             Commands::waitUntilEndOfAllMoves();
-            Endstops::update();
+			Endstops::update();
             Endstops::update(); // double test to get right signal. Needed for crosstalk protection.
             Endstops::report();
             break;

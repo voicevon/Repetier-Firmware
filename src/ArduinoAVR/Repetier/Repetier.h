@@ -325,10 +325,10 @@ inline void memcopy4(void *dest,void *source) {
 #define UI_SPEEDDEPENDENT_POSITIONING true
 #endif
 
-#if DRIVE_SYSTEM==DELTA || DRIVE_SYSTEM==TUGA || DRIVE_SYSTEM==BIPOD || defined(FAST_COREXYZ)
-#define NONLINEAR_SYSTEM 1
-#else
+#if DRIVE_SYSTEM==0 
 #define NONLINEAR_SYSTEM 0
+#else
+#define NONLINEAR_SYSTEM 1
 #endif
 
 #ifdef FEATURE_Z_PROBE
