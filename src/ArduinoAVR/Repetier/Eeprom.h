@@ -334,7 +334,7 @@ public:
 #if EEPROM_MODE != 0
         return HAL::eprGetFloat(EPR_DELTA_DIAGONAL_ROD_LENGTH);
 #else
-		return 100;        //return DELTA_DIAGONAL_ROD;
+        return DELTA_DIAGONAL_ROD;
 #endif
     }
     static inline int16_t deltaSegmentsPerSecondPrint() {

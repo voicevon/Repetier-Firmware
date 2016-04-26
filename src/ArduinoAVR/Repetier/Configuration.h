@@ -106,7 +106,7 @@ We can connect BlueTooth to serial converter module directly to boards based on 
   c) pin 17 and 18 of AUX4 connector, then set BLUETOOTH_SERIAL to 2 (RX from BT to AUX4 p18, TX from BT to AUX4 p17)
   Comment out or set the BLUETOOTH_SERIAL to 0 or -1 to disable this feature.
 */
-#define BLUETOOTH_SERIAL   -1                      // Port number (1..3) - For RUMBA use 3
+#define BLUETOOTH_SERIAL   0                      // Port number (1..3) - For RUMBA use 3
 #define BLUETOOTH_BAUD     115200                 // communication speed
 
 // Uncomment the following line if you are using Arduino compatible firmware made for Arduino version earlier then 1.0
@@ -151,54 +151,6 @@ pins. Separate multiple GCODEs with \n
     // ***************************************************
     // *** These parameter are only for Delta printers ***
     // ***************************************************
-// Set the values true where you have a hardware endstop.The Pin number is taken from pins.h.
-#define MIN_HARDWARE_ENDSTOP_X false
-#define MIN_HARDWARE_ENDSTOP_Y false
-#define MIN_HARDWARE_ENDSTOP_Z true
-#define MAX_HARDWARE_ENDSTOP_X true
-#define MAX_HARDWARE_ENDSTOP_Y true
-#define MAX_HARDWARE_ENDSTOP_Z false
-
-//set to true to invert the logic of the endstops
-#define ENDSTOP_X_MIN_INVERTING true
-#define ENDSTOP_Y_MIN_INVERTING true
-#define ENDSTOP_Z_MIN_INVERTING true
-#define ENDSTOP_X_MAX_INVERTING true
-#define ENDSTOP_Y_MAX_INVERTING true
-#define ENDSTOP_Z_MAX_INVERTING true
-
-/** Maximum feedrate, the system allows. Higher feedrates are reduced to these values.
-The axis order in all axis related arrays is X, Y, Z
-Overridden if EEPROM activated.
-*/
-#define MAX_FEEDRATE_X 0.2
-#define MAX_FEEDRATE_Y 0.2
-#define MAX_FEEDRATE_Z 0.2
-
-/** Home position speed in mm/s. Overridden if EEPROM activated. */
-#define HOMING_FEEDRATE_X 0.1
-#define HOMING_FEEDRATE_Y 0.1
-#define HOMING_FEEDRATE_Z 1
-
-//// ENDSTOP SETTINGS:
-// Sets direction of endstops when homing; 1=MAX, -1=MIN
-#define X_HOME_DIR 1
-#define Y_HOME_DIR 1
-#define Z_HOME_DIR -1
-
-
-/** \brief X, Y, Z max acceleration in mm/s^2 for printing moves or retracts. Make sure your printer can go that high!
-Overridden if EEPROM activated.
-*/
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_X 10  //1000
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Y 10 //1000
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Z 10  //100
-
-/** \brief X, Y, Z max acceleration in mm/s^2 for travel moves.  Overridden if EEPROM activated.*/
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_X 2 //2000
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Y 2 //2000
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Z 2 //100
-
 
 /** \brief Delta drive type: 0 - belts and pulleys, 1 - filament drive */
 #define DELTA_DRIVE_TYPE 0
@@ -223,9 +175,9 @@ Overridden if EEPROM activated.
 
 // Calculations
 #define AXIS_STEPS_PER_MM ((float)(MICRO_STEPS * STEPS_PER_ROTATION) / PULLEY_CIRCUMFERENCE)
-#define XAXIS_STEPS_PER_MM 2844.45 //3200*16/18  //AXIS_STEPS_PER_MM
-#define YAXIS_STEPS_PER_MM 2844.45 //3200*16/18  //AXIS_STEPS_PER_MM
-#define ZAXIS_STEPS_PER_MM 3200  //AXIS_STEPS_PER_MM
+#define XAXIS_STEPS_PER_MM AXIS_STEPS_PER_MM
+#define YAXIS_STEPS_PER_MM AXIS_STEPS_PER_MM
+#define ZAXIS_STEPS_PER_MM AXIS_STEPS_PER_MM
 #endif
 #if DRIVE_SYSTEM == 90
 // Set the values true where you have a hardware endstop. The Pin number is taken from pins.h.
@@ -248,102 +200,20 @@ Overridden if EEPROM activated.
 The axis order in all axis related arrays is X, Y, Z
 Overridden if EEPROM activated.
 */
-#define MAX_FEEDRATE_X 10     //10 degree per second
-#define MAX_FEEDRATE_Y 10
-#define MAX_FEEDRATE_Z 20     //20 mm per second
-
+#define MAX_FEEDRATE_X 200
+#define MAX_FEEDRATE_Y 200
+#define MAX_FEEDRATE_Z 5
 
 /** Home position speed in mm/s. Overridden if EEPROM activated. */
-#define HOMING_FEEDRATE_X 10   //10 degree per second
-#define HOMING_FEEDRATE_Y 10
-#define HOMING_FEEDRATE_Z 2  //2mm per second
-
+#define HOMING_FEEDRATE_X 80
+#define HOMING_FEEDRATE_Y 80
+#define HOMING_FEEDRATE_Z 1
 
 //// ENDSTOP SETTINGS:
 // Sets direction of endstops when homing; 1=MAX, -1=MIN
 #define X_HOME_DIR 1
 #define Y_HOME_DIR 1
 #define Z_HOME_DIR -1
-
-#define INVERT_Z_DIR false
-
-
-/** \brief X, Y, Z max acceleration in mm/s^2 for printing moves or retracts. Make sure your printer can go that high!
-Overridden if EEPROM activated.
-*/
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_X 10  //1000
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Y 10 //1000
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Z 10  //100
-
-/** \brief X, Y, Z max acceleration in mm/s^2 for travel moves.  Overridden if EEPROM activated.*/
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_X 20 //2000
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Y 20 //2000
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Z 20 //100
-
-// *******************************************************
-// *** These parameter are for all other printer types ***
-// *******************************************************
-
-/** Drive settings for printers with cartesian drive systems */
-/** \brief Number of steps for a 1mm move in x direction.*/
-#define SHOULDER_GEAR_TEETH_SMALL 11
-#define SHOULDER_GEAR_TEETH_BIG 108
-#define ELBOW_GEAR_TEETH_SMALL 11
-#define ELBOW_GEAR_TEETH_BIG 68
-
-#define XAXIS_STEPS_PER_MM (SHOULDER_GEAR_TEETH_BIG * 16) / (SHOULDER_GEAR_TEETH_SMALL*1.8)
-#define YAXIS_STEPS_PER_MM (ELBOW_GEAR_TEETH_BIG * 16) / (ELBOW_GEAR_TEETH_SMALL*1.8)
-#define ZAXIS_STEPS_PER_MM 1600
-
-#endif
-
-#if DRIVE_SYSTEM == 91
-// Set the values true where you have a hardware endstop. The Pin number is taken from pins.h.
-#define MIN_HARDWARE_ENDSTOP_X true
-#define MIN_HARDWARE_ENDSTOP_Y true
-#define MIN_HARDWARE_ENDSTOP_Z true
-#define MAX_HARDWARE_ENDSTOP_X false
-#define MAX_HARDWARE_ENDSTOP_Y false
-#define MAX_HARDWARE_ENDSTOP_Z false
-
-//set to true to invert the logic of the endstops
-#define ENDSTOP_X_MIN_INVERTING true
-#define ENDSTOP_Y_MIN_INVERTING true
-#define ENDSTOP_Z_MIN_INVERTING true
-#define ENDSTOP_X_MAX_INVERTING true
-#define ENDSTOP_Y_MAX_INVERTING true
-#define ENDSTOP_Z_MAX_INVERTING true
-
-/** Maximum feedrate, the system allows. Higher feedrates are reduced to these values.
-The axis order in all axis related arrays is X, Y, Z
-Overridden if EEPROM activated.
-*/
-#define MAX_FEEDRATE_X 2
-#define MAX_FEEDRATE_Y 1
-#define MAX_FEEDRATE_Z 2
-
-/** Home position speed in mm/s. Overridden if EEPROM activated. */
-#define HOMING_FEEDRATE_X 1
-#define HOMING_FEEDRATE_Y 1
-#define HOMING_FEEDRATE_Z 1
-
-//// ENDSTOP SETTINGS:
-// Sets direction of endstops when homing; 1=MAX, -1=MIN
-#define X_HOME_DIR -1
-#define Y_HOME_DIR -1
-#define Z_HOME_DIR -1
-
-/** \brief X, Y, Z max acceleration in mm/s^2 for printing moves or retracts. Make sure your printer can go that high!
-Overridden if EEPROM activated.
-*/
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_X 10  //1000
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Y 10 //1000
-#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Z 10  //100
-
-/** \brief X, Y, Z max acceleration in mm/s^2 for travel moves.  Overridden if EEPROM activated.*/
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_X 20 //2000
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Y 20 //2000
-#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Z 20 //100
 
 // *******************************************************
 // *** These parameter are for all other printer types ***
@@ -353,13 +223,13 @@ Overridden if EEPROM activated.
 /** \brief Number of steps for a 1mm move in x direction.
 For xy gantry use 2*belt moved!
 Overridden if EEPROM activated. */
-#define XAXIS_STEPS_PER_MM 2844.44
+#define XAXIS_STEPS_PER_MM 98.425196
 /** \brief Number of steps for a 1mm move in y direction.
 For xy gantry use 2*belt moved!
 Overridden if EEPROM activated.*/
-#define YAXIS_STEPS_PER_MM 2844.44
+#define YAXIS_STEPS_PER_MM 98.425196
 /** \brief Number of steps for a 1mm move in z direction  Overridden if EEPROM activated.*/
-#define ZAXIS_STEPS_PER_MM 2844.44
+#define ZAXIS_STEPS_PER_MM 1600
 #endif
 
 // ##########################################################################################
@@ -1033,7 +903,7 @@ on this endstop.
 // is also the axis you invert!
 #define INVERT_X_DIR true
 #define INVERT_Y_DIR true
-
+#define INVERT_Z_DIR true
 
 
 
@@ -1290,7 +1160,17 @@ for some printers causing an early stall.
 #define KEEP_ALIVE_INTERVAL 2000
 //// Acceleration settings
 
+/** \brief X, Y, Z max acceleration in mm/s^2 for printing moves or retracts. Make sure your printer can go that high!
+ Overridden if EEPROM activated.
+*/
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_X 1000
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Y 1000
+#define MAX_ACCELERATION_UNITS_PER_SQ_SECOND_Z 100
 
+/** \brief X, Y, Z max acceleration in mm/s^2 for travel moves.  Overridden if EEPROM activated.*/
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_X 2000
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Y 2000
+#define MAX_TRAVEL_ACCELERATION_UNITS_PER_SQ_SECOND_Z 100
 /** If you print on a moving bed, it can become more shaky the higher and bigger
  your print gets. Therefore it might be helpfull to reduce acceleration with
  increasing print height. You can define here how acceleration should change.
@@ -1448,7 +1328,7 @@ matches, the stored values are used to overwrite the settings.
 IMPORTANT: With mode <>0 some changes in Configuration.h are not set any more, as they are
            taken from the EEPROM.
 */
-#define EEPROM_MODE 0
+#define EEPROM_MODE 2
 
 
 /**************** duplicate motor driver ***************
@@ -1514,7 +1394,6 @@ This defines the full power duration before returning to set value. Time is in m
 /* A watchdog resets the printer, if a signal is not send within predefined time limits. That way we can be sure that the board
 is always running and is not hung up for some unknown reason. */
 #define FEATURE_WATCHDOG 1
-#pragma region Z-probing
 
 /* Z-Probing */
 
@@ -1527,7 +1406,7 @@ to recalibrate z.
 /* How is z min measured
  0 = trigger is height of real bed neglecting coating
  1 = trigger is current coating
-
+ 
  For mode 1 the current coating thickness is added to measured z probe distances.
  That way the real bed is always the reference height. For inductive sensors
  or z min endstops the coating has no effect on the result, so you should use mode 0.
@@ -1558,9 +1437,7 @@ to recalibrate z.
 /** Set 1 if you need a hot extruder for good probe results. Normally only required if nozzle is probe. */
 #define Z_PROBE_REQUIRES_HEATING 0
 /** Minimum extruder temperature for probing. If it is lower, it will be increased to that value. */
-#define Z_PROBE_MIN_TEMPERATURE 150  
-#pragma endregion
-
+#define Z_PROBE_MIN_TEMPERATURE 150
 
 /*
 Define how we measure the bed rotation. 
