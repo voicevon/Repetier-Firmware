@@ -235,7 +235,6 @@ void PrintLine::moveRelativeDistanceInStepsReal(int32_t x, int32_t y, int32_t z,
 	    p->distance = sqrt(xydist2 + back_diff[Z_AXIS] * back_diff[Z_AXIS]);
 	    else
 	    p->distance = sqrt(xydist2);
-	    // 56 seems to be xstep|ystep|e_posdir which just seems odd
 	    Printer::backlashDir = (Printer::backlashDir & 56) | (p2->dir & XYZ_DIRPOS);
 	    p->calculateMove(back_diff,pathOptimize,p->primaryAxis);
 	    p = p2; // use saved instance for the real move
@@ -1863,7 +1862,7 @@ inline void PrintLine::queueEMove(int32_t extrudeDiff,uint8_t check_endstops,uin
   Split a line up into a series of lines with at most DELTASEGMENTS_PER_PRINTLINE delta segments.
   @param check_endstops Check endstops during the move.
   @param pathOptimize Run the path optimizer.
-  @param delta_step_rate delta step rate in segments per second for the move.
+  @param softEndstop check if we go out of bounds.
 */
 uint8_t PrintLine::queueNonlinearMove(uint8_t check_endstops,uint8_t pathOptimize, uint8_t softEndstop)
 {

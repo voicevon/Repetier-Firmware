@@ -418,9 +418,9 @@ void Extruder::markAllUnjammed()
         extruder[i].tempControl.setJammed(false);
         extruder[i].tempControl.setSlowedDown(false);
         extruder[i].resetJamSteps();
+	    if(Printer::feedrateMultiply == extruder[i].jamSlowdownTo)
+			Commands::changeFeedrateMultiply(100);
     }
-    if(Printer::feedrateMultiply == JAM_SLOWDOWN_TO)
-        Commands::changeFeedrateMultiply(100);
     Printer::unsetAnyTempsensorDefect(); // stop alarm
     Com::printInfoFLN(PSTR("Marked all extruders as unjammed."));
     Printer::setUIErrorMessage(false);
@@ -614,6 +614,10 @@ This function changes and initializes a new extruder. This is also called, after
 */
 void Extruder::selectExtruderById(uint8_t extruderId)
 {
+#if DUAL_X_AXIS && FEATURE_DITTO_PRINTING
+	if(dittoMode != 0) // In ditto mode only extruder 0 is usable and gets set by selecting ditto mode
+		return;
+#endif
 #if NUM_EXTRUDER > 0
 #if MIXING_EXTRUDER
     if(extruderId >= VIRTUAL_EXTRUDER)
@@ -652,7 +656,7 @@ void Extruder::selectExtruderById(uint8_t extruderId)
 #if DUAL_X_AXIS
 	// Park current extruder
 	int32_t dualXPos = Printer::currentPositionSteps[X_AXIS] - Printer::xMinSteps;
-	if(Printer::isHomed())
+	if(Printer::isHomed() && executeSelect)
 		PrintLine::moveRelativeDistanceInSteps(Extruder::current->xOffset - dualXPos, 0, 0, 0, EXTRUDER_SWITCH_XY_SPEED, true, false);
 #endif	
     Extruder::current = &extruder[extruderId];
@@ -691,14 +695,14 @@ void Extruder::selectExtruderById(uint8_t extruderId)
 		Commands::waitUntilEndOfAllMoves();
 		Printer::updateCurrentPosition(true);
 		GCode::executeFString(Extruder::current->selectCommands);
-		executeSelect = false;
 	}
 	Printer::currentPositionSteps[X_AXIS] = Extruder::current->xOffset - dualXPos;
-	if(Printer::isHomed())
+	if(Printer::isHomed() && executeSelect)
 		PrintLine::moveRelativeDistanceInSteps(-Extruder::current->xOffset + dualXPos, 0, 0, 0, EXTRUDER_SWITCH_XY_SPEED, true, false);
 	Printer::currentPositionSteps[X_AXIS] = dualXPos + Printer::xMinSteps;
     Printer::offsetX = 0;
 	Printer::updateCurrentPosition(true);
+	executeSelect = false;
 #else	
     Printer::offsetX = -Extruder::current->xOffset * Printer::invAxisStepsPerMM[X_AXIS];
 #endif
@@ -2544,7 +2548,7 @@ Extruder extruder[NUM_EXTRUDER] =
         }
         ,ext0_select_cmd,ext0_deselect_cmd,EXT0_EXTRUDER_COOLER_SPEED,0,0,0
 #if EXTRUDER_JAM_CONTROL
-        ,0,0,10,0,0
+        ,0,0,10,0,0,JAM_SLOWDOWN_STEPS,JAM_ERROR_STEPS,JAM_SLOWDOWN_TO
 #endif
     }
 #endif
@@ -2571,7 +2575,7 @@ Extruder extruder[NUM_EXTRUDER] =
         }
         ,ext1_select_cmd,ext1_deselect_cmd,EXT1_EXTRUDER_COOLER_SPEED,0,0,0
 #if EXTRUDER_JAM_CONTROL
-        ,0,0,10,0,0
+        ,0,0,10,0,0,JAM_SLOWDOWN_STEPS,JAM_ERROR_STEPS,JAM_SLOWDOWN_TO
 #endif
     }
 #endif
@@ -2598,7 +2602,7 @@ Extruder extruder[NUM_EXTRUDER] =
         }
         ,ext2_select_cmd,ext2_deselect_cmd,EXT2_EXTRUDER_COOLER_SPEED,0,0,0
 #if EXTRUDER_JAM_CONTROL
-        ,0,0,10,0,0
+        ,0,0,10,0,0,JAM_SLOWDOWN_STEPS,JAM_ERROR_STEPS,JAM_SLOWDOWN_TO
 #endif
     }
 #endif
@@ -2625,7 +2629,7 @@ Extruder extruder[NUM_EXTRUDER] =
         }
         ,ext3_select_cmd,ext3_deselect_cmd,EXT3_EXTRUDER_COOLER_SPEED,0,0,0
 #if EXTRUDER_JAM_CONTROL
-        ,0,0,10,0,0
+        ,0,0,10,0,0,JAM_SLOWDOWN_STEPS,JAM_ERROR_STEPS,JAM_SLOWDOWN_TO
 #endif
     }
 #endif
@@ -2652,7 +2656,7 @@ Extruder extruder[NUM_EXTRUDER] =
         }
         ,ext4_select_cmd,ext4_deselect_cmd,EXT4_EXTRUDER_COOLER_SPEED,0,0,0
 #if EXTRUDER_JAM_CONTROL
-        ,0,0,10,0,0
+        ,0,0,10,0,0,JAM_SLOWDOWN_STEPS,JAM_ERROR_STEPS,JAM_SLOWDOWN_TO
 #endif
     }
 #endif
@@ -2679,7 +2683,7 @@ Extruder extruder[NUM_EXTRUDER] =
         }
         ,ext5_select_cmd,ext5_deselect_cmd,EXT5_EXTRUDER_COOLER_SPEED,0,0,0
 #if EXTRUDER_JAM_CONTROL
-        ,0,0,10,0,0
+        ,0,0,10,0,0,JAM_SLOWDOWN_STEPS,JAM_ERROR_STEPS,JAM_SLOWDOWN_TO
 #endif
     }
 #endif

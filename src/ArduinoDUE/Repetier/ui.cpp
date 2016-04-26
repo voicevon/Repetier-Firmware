@@ -2083,7 +2083,7 @@ void UIDisplay::refreshPage()
                     uint8_t py = 8;
                     for(uint8_t r = 0; r < 3; r++)
                     {
-                        if(u8g_IsBBXIntersection(&u8g, 0, py-UI_FONT_SMALL_HEIGHT, 1, UI_FONT_SMALL_HEIGHT))
+                        if(u8g_IsBBXIntersection(&u8g, 0, py - UI_FONT_SMALL_HEIGHT, 1, UI_FONT_SMALL_HEIGHT))
                             printU8GRow(0, py, cache[r]);
                         py += 10;
                     }
@@ -3199,6 +3199,22 @@ int UIDisplay::executeAction(unsigned int action, bool allowMoves)
         case UI_DITTO_1:
         case UI_DITTO_2:
         case UI_DITTO_3:
+#if DUAL_X_AXIS
+		Extruder::dittoMode = 0;
+		Extruder::selectExtruderById(0);
+		Printer::homeXAxis();
+		if( action - UI_DITTO_0 > 0) {
+			Extruder::current = &extruder[1];
+			PrintLine::moveRelativeDistanceInSteps(-Extruder::current->xOffset + static_cast<int32_t>(Printer::xLength*0.5*Printer::axisStepsPerMM[X_AXIS]), 0, 0, 0, EXTRUDER_SWITCH_XY_SPEED, true, true);
+			Printer::currentPositionSteps[X_AXIS] = Printer::xMinSteps;
+			Extruder::current = &extruder[0];
+			Extruder::dittoMode =  1;
+		}
+#else
+	Extruder::dittoMode =  action - UI_DITTO_0;
+}
+#endif
+		
             Extruder::dittoMode = action - UI_DITTO_0;
             break;
 #endif

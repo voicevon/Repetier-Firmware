@@ -883,7 +883,7 @@ void Commands::processGCode(GCode *com) {
                 // ui can only execute motion commands if we are not waiting inside a move for an
                 // old move to finish. For normal response times, we always leave one free after
                 // sending a line. Drawback: 1 buffer line less for limited time. Since input cache
-                // gets filled while waiting, the lost is neglectible.
+                // gets filled while waiting, the lost is neglectable.
                 PrintLine::waitForXFreeLines(1, true);
 #endif // UI_HAS_KEYS
 #ifdef DEBUG_QUEUE_MOVE
@@ -2013,7 +2013,8 @@ void Commands::processMCode(GCode *com) {
         case 280: // M280
 #if DUAL_X_AXIS
 			Extruder::dittoMode = 0;
-			Extruder::selectExtruderById(0);
+			if(Extruder::current->id != 0)
+				Extruder::selectExtruderById(0);
 			Printer::homeXAxis();
 			if(com->hasS() && com->S > 0) {
 				Extruder::current = &extruder[1];
@@ -2022,6 +2023,7 @@ void Commands::processMCode(GCode *com) {
 				Extruder::current = &extruder[0];
 				Extruder::dittoMode = 1;
 			}
+			Printer::updateCurrentPosition(true);
 #else		
             if(com->hasS()) { // Set ditto mode S: 0 = off, 1 = 1 extra extruder, 2 = 2 extra extruder, 3 = 3 extra extruders
                 Extruder::dittoMode = com->S;
@@ -2296,6 +2298,7 @@ void Commands::processMCode(GCode *com) {
             else
                 Extruder::unpauseExtruders();
             break;
+#if EXTRUDER_JAM_CONTROL && NUM_EXTRUDER > 0
         case 602:
             Commands::waitUntilEndOfAllMoves();
             if(com->hasS()) Printer::setDebugJam(com->S > 0);
@@ -2304,6 +2307,22 @@ void Commands::processMCode(GCode *com) {
         case 603:
             Printer::setInterruptEvent(PRINTER_INTERRUPT_EVENT_JAM_DETECTED, true);
             break;
+		case 604:
+			{
+				uint8_t extId = Extruder::current->id;
+				if(com->hasT()) extId = com->T;
+				if(extId >= NUM_EXTRUDER)
+					break;
+				Extruder &ext = extruder[extId];
+				if(com->hasX())
+					ext.jamSlowdownSteps = static_cast<int16_t>(com->X);
+				if(com->hasY())
+					ext.jamErrorSteps = static_cast<int16_t>(com->Y);
+				if(com->hasZ())
+					ext.jamSlowdownTo = static_cast<uint8_t>(com->Z);
+			}
+			break;
+#endif			
         case 907: { // M907 Set digital trimpot/DAC motor current using axis codes.
 #if STEPPER_CURRENT_CONTROL != CURRENT_CONTROL_MANUAL
                 // If "S" is specified, use that as initial default value, then update each axis w/ specific values as found later.
