@@ -96,27 +96,27 @@ void PrintLine::moveRelativeDistanceInSteps(int32_t x, int32_t y, int32_t z, int
     if(Printer::debugDryrun() || (MIN_EXTRUDER_TEMP > 30 && Extruder::current->tempControl.currentTemperatureC < MIN_EXTRUDER_TEMP && !Printer::isColdExtrusionAllowed()))
         e = 0; // should not be allowed for current temperature
 #endif
-	Com::printFLN(PSTR("PrintLine::moveRelativeDistanceInSteo(),   Current,offset  "));
-	Com::printNumber(Printer::currentPositionSteps[X_AXIS]);
-	Com::printF(PSTR(","));
-	Com::printNumber(x);
-	Com::printFLN(PSTR(" "));
-
-	
-	Com::printNumber(Printer::currentPositionSteps[Y_AXIS]);
-	Com::printF(PSTR(","));
-	Com::printNumber(y);
-	Com::printFLN(PSTR(" "));
-
-	Com::printNumber(Printer::currentPositionSteps[Z_AXIS]);
-	Com::printF(PSTR(","));
-	Com::printNumber(z);
-	Com::printFLN(PSTR(" "));
-
-	Com::printNumber(Printer::currentPositionSteps[Z_AXIS]);
-	Com::printF(PSTR(","));
-	Com::printNumber(e);
-	Com::printFLN(PSTR(" "));
+	Com::printFLN(PSTR("PrintLine::moveRelativeDistanceInSteo(),  feedRate="),feedrate);
+	if (x != 0)
+	{
+		Com::printF(PSTR("X from,"), Printer::currentPositionSteps[X_AXIS]);
+		Com::printFLN(PSTR(" distance"),x);
+	}
+	if (y != 0)
+	{
+		Com::printF(PSTR("Y from,"), Printer::currentPositionSteps[Y_AXIS]);
+		Com::printFLN(PSTR(" distance"), y);
+	}	
+	if (z != 0)
+	{
+		Com::printF(PSTR("Z from,"), Printer::currentPositionSteps[Z_AXIS]);
+		Com::printFLN(PSTR(" distance"), z);
+	}	
+	if (e != 0)
+	{
+		Com::printF(PSTR("E from,"), Printer::currentPositionSteps[E_AXIS]);
+		Com::printFLN(PSTR(" distance"), e);
+	}
 
 	float savedFeedrate = Printer::feedrate;
     Printer::destinationSteps[X_AXIS] = Printer::currentPositionSteps[X_AXIS] + x;
