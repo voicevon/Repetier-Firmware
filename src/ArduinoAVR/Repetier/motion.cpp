@@ -96,27 +96,29 @@ void PrintLine::moveRelativeDistanceInSteps(int32_t x, int32_t y, int32_t z, int
     if(Printer::debugDryrun() || (MIN_EXTRUDER_TEMP > 30 && Extruder::current->tempControl.currentTemperatureC < MIN_EXTRUDER_TEMP && !Printer::isColdExtrusionAllowed()))
         e = 0; // should not be allowed for current temperature
 #endif
-	Com::printFLN(PSTR("PrintLine::moveRelativeDistanceInSteo(),   Current,offset  "));
-	Com::printNumber(Printer::currentPositionSteps[X_AXIS]);
-	Com::printF(PSTR(","));
-	Com::printNumber(x);
-	Com::printFLN(PSTR(" "));
-
+	Com::printFLN(PSTR("PrintLine::moveRelativeDistanceInSteps() ,feedrate=(in mm/s)"), feedrate);
+	if (x != 0)
+	{
+		Com::printF(PSTR("X_AXIS From "), Printer::currentPositionSteps[X_AXIS]);
+		Com::printFLN(PSTR(",   Distance  "), x);
+	}	
+	if (y != 0)
+	{
+		Com::printF(PSTR("Y_AXIS From "), Printer::currentPositionSteps[Y_AXIS]);
+		Com::printFLN(PSTR(",   Distance  "), y);
+	}	
+	if (z != 0)
+	{
+		Com::printF(PSTR("Z_AXIS From "), Printer::currentPositionSteps[Z_AXIS]);
+		Com::printFLN(PSTR(",   Distance  "), z);
+	}	
+	if (e != 0)
+	{
+		Com::printF(PSTR("E_AXIS From "), Printer::currentPositionSteps[E_AXIS]);
+		Com::printFLN(PSTR(",   Distance  "), e);
+	}
 	
-	Com::printNumber(Printer::currentPositionSteps[Y_AXIS]);
-	Com::printF(PSTR(","));
-	Com::printNumber(y);
-	Com::printFLN(PSTR(" "));
 
-	Com::printNumber(Printer::currentPositionSteps[Z_AXIS]);
-	Com::printF(PSTR(","));
-	Com::printNumber(z);
-	Com::printFLN(PSTR(" "));
-
-	Com::printNumber(Printer::currentPositionSteps[Z_AXIS]);
-	Com::printF(PSTR(","));
-	Com::printNumber(e);
-	Com::printFLN(PSTR(" "));
 
 	float savedFeedrate = Printer::feedrate;
     Printer::destinationSteps[X_AXIS] = Printer::currentPositionSteps[X_AXIS] + x;
@@ -1554,6 +1556,32 @@ uint8_t transformCartesianStepsToDeltaSteps(int32_t cartesianPosSteps[], int32_t
 
 #endif
 
+#if DRIVE_SYSTEM==91
+/*
+WashBot
+
+
+
+Forward Kinematic:
+
+
+Inverse Kinematic:
+
+
+*/
+uint8_t transformCartesianStepsToDeltaSteps(int32_t cartesianPosSteps[], int32_t WashBotPosSteps[])
+{
+	//This is a virtual method for essential abstract class Printer.
+	//Com::printFLN("Not implicated in transformCartesianStepsToDeltaSteps() ,0604-1805");
+	for (fast8_t i = 0; i < 2; i++)
+	{
+		WashBotPosSteps[i] = cartesianPosSteps[i];
+	}
+	return 1;
+}
+
+
+#endif
 
 #if NONLINEAR_SYSTEM
 
